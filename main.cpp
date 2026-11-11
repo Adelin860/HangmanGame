@@ -1,10 +1,10 @@
-
 #include <iostream>
 #include <string>
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <cctype>
+#include <cstddef>
 
 using namespace std;
 
@@ -127,9 +127,9 @@ void displayIncorrectGuesses(const vector<char>& guesses)
     }
     else
     {
-        for (char letter : guesses)
+        for (size_t i = 0; i < guesses.size(); i++)
         {
-            cout << letter << " ";
+            cout << guesses[i] << " ";
         }
     }
 
@@ -141,9 +141,9 @@ void displayWord(const string& word)
 {
     cout << "Word: ";
 
-    for (char letter : word)
+    for (size_t i = 0; i < word.length(); i++)
     {
-        cout << letter << " ";
+        cout << word[i] << " ";
     }
 
     cout << endl;
@@ -174,7 +174,7 @@ bool playGame(const vector<string>& words)
 
         displayIncorrectGuesses(incorrectGuesses);
 
-        cout << "Guesses Left: " << attempts << "/" 
+        cout << "Guesses Left: " << attempts << "/"
              << maxAttempts << endl;
 
         string input;
@@ -189,7 +189,8 @@ bool playGame(const vector<string>& words)
             continue;
         }
 
-        char guess = tolower(static_cast<unsigned char>(input[0]));
+        char guess = static_cast<char>(
+            tolower(static_cast<unsigned char>(input[0])));
 
         // Validate alphabetical character
         if (!isalpha(static_cast<unsigned char>(guess)))
@@ -201,9 +202,9 @@ bool playGame(const vector<string>& words)
         // Check whether the letter was already guessed
         bool alreadyGuessed = false;
 
-        for (char letter : guessedLetters)
+        for (size_t i = 0; i < guessedLetters.size(); i++)
         {
-            if (letter == guess)
+            if (guessedLetters[i] == guess)
             {
                 alreadyGuessed = true;
                 break;
@@ -221,7 +222,7 @@ bool playGame(const vector<string>& words)
         // Check whether the guessed letter exists
         bool correctGuess = false;
 
-        for (int i = 0; i < secretWord.length(); i++)
+        for (size_t i = 0; i < secretWord.length(); i++)
         {
             if (secretWord[i] == guess)
             {
@@ -271,7 +272,7 @@ int main()
 {
     srand(static_cast<unsigned int>(time(0)));
 
-    vector<string> words = {
+    const char* wordArray[] = {
         "teacher",
         "computer",
         "programming",
@@ -283,6 +284,9 @@ int main()
         "technology",
         "development"
     };
+
+    vector<string> words(wordArray,
+        wordArray + sizeof(wordArray) / sizeof(wordArray[0]));
 
     int wins = 0;
     int losses = 0;
@@ -309,14 +313,16 @@ int main()
         cout << "\nWould you like to play again? (y/n): ";
         cin >> playAgain;
 
-        playAgain = tolower(static_cast<unsigned char>(playAgain));
+        playAgain = static_cast<char>(
+            tolower(static_cast<unsigned char>(playAgain)));
 
         while (playAgain != 'y' && playAgain != 'n')
         {
             cout << "Please enter y or n: ";
             cin >> playAgain;
 
-            playAgain = tolower(static_cast<unsigned char>(playAgain));
+            playAgain = static_cast<char>(
+                tolower(static_cast<unsigned char>(playAgain)));
         }
 
     } while (playAgain == 'y');
